@@ -6,26 +6,26 @@ const navItems = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Projects", href: "/projects", icon: Database },
   { name: "Model Registry", href: "/registry", icon: GitCommit },
+  { name: "Architecture", href: "/architecture", icon: Network },
   { name: "Training Runs", href: "/runs", icon: Activity },
   { name: "Dataset Upload", href: "/upload", icon: FileUp },
-  { name: "Architecture", href: "/architecture", icon: Network },
-  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 export function Sidebar() {
   const location = useLocation();
 
   return (
-    <div className="flex h-screen w-64 flex-col border-r border-border bg-card px-3 py-4 sticky top-0">
-      <div className="mb-8 px-4 mt-2">
-        <h1 className="text-xl font-bold tracking-tight text-primary flex items-center gap-2">
-          <Activity className="h-6 w-6" />
-          CloudTrain
-        </h1>
-        <p className="text-xs text-muted-foreground mt-1">Serverless MLOps Platform</p>
+    <div className="flex h-full w-72 flex-col glass rounded-3xl p-6 shadow-2xl shrink-0 border-white/5">
+      <div className="flex items-center gap-4 px-2 py-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 shadow-lg shadow-orange-500/20">
+          <Activity className="h-7 w-7 text-black" />
+        </div>
+        <span className="text-2xl font-extrabold tracking-tight text-white">
+          Cloud<span className="text-gradient">Train</span>
+        </span>
       </div>
-      
-      <nav className="flex-1 space-y-1">
+
+      <nav className="mt-10 flex-1 space-y-2">
         {navItems.map((item) => {
           const isActive = location.pathname === item.href || (item.href !== "/" && location.pathname.startsWith(item.href));
           return (
@@ -33,29 +33,27 @@ export function Sidebar() {
               key={item.name}
               to={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                "group flex items-center gap-3.5 rounded-2xl px-4 py-3.5 text-[15px] font-semibold transition-all duration-300",
                 isActive
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  ? "bg-gradient-to-r from-amber-500/10 to-orange-500/5 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.1)] border border-amber-500/20"
+                  : "text-zinc-400 hover:bg-white/5 hover:text-white"
               )}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon className={cn("h-5 w-5 transition-colors", isActive ? "text-amber-500" : "text-zinc-500 group-hover:text-amber-400")} />
               {item.name}
             </Link>
           );
         })}
       </nav>
-      
-      <div className="mt-auto px-4 py-4 border-t border-border">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-            CA
-          </div>
-          <div className="text-sm">
-            <p className="font-medium text-foreground">Cloud Architect</p>
-            <p className="text-xs text-muted-foreground">Platform Admin</p>
-          </div>
-        </div>
+
+      <div className="mt-auto pt-6 border-t border-white/5">
+        <Link
+          to="/settings"
+          className="group flex items-center gap-3.5 rounded-2xl px-4 py-3.5 text-[15px] font-semibold text-zinc-400 transition-colors hover:bg-white/5 hover:text-white"
+        >
+          <Settings className="h-5 w-5 text-zinc-500 group-hover:text-amber-400 transition-colors" />
+          Settings
+        </Link>
       </div>
     </div>
   );

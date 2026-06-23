@@ -1,6 +1,7 @@
 import { ProjectCard } from "../components/ProjectCard";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const MOCK_PROJECTS = [
   {
@@ -31,24 +32,30 @@ const MOCK_PROJECTS = [
 
 export function Dashboard() {
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-12 relative max-w-7xl mx-auto">
+      <div className="flex items-center justify-between pb-8 border-b border-white/5">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Platform Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Overview of your machine learning models and infrastructure.</p>
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-bold tracking-widest uppercase mb-4 shadow-[0_0_15px_rgba(245,158,11,0.15)]">
+            <Sparkles className="w-4 h-4" />
+            Active Environment
+          </motion.div>
+          <h1 className="text-5xl font-black tracking-tight text-white mb-2">Platform <span className="text-gradient">Dashboard</span></h1>
+          <p className="text-zinc-400 text-lg font-medium">Overview of your machine learning models and infrastructure.</p>
         </div>
         <Link
           to="/projects/new"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 shadow-sm"
+          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 px-8 py-4 text-[15px] font-extrabold text-black transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] shadow-lg"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-5 w-5" />
           Create Project
         </Link>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {MOCK_PROJECTS.map((project) => (
-          <ProjectCard key={project.id} {...project} />
+      <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        {MOCK_PROJECTS.map((project, idx) => (
+          <motion.div key={project.id} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1, type: "spring", stiffness: 200 }}>
+            <ProjectCard {...project} />
+          </motion.div>
         ))}
       </div>
     </div>
