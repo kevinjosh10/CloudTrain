@@ -8,9 +8,9 @@ import { Dashboard } from "./pages/Dashboard";
 import { ArchitectureExplorer } from "./pages/ArchitectureExplorer";
 import { DatasetUpload } from "./pages/DatasetUpload";
 import { ProjectDetails } from "./pages/ProjectDetails";
+import { ModelRegistry } from "./pages/ModelRegistry";
 
 const Projects = () => <div className="text-2xl font-bold">Projects List</div>;
-const Registry = () => <div className="text-2xl font-bold">Model Registry</div>;
 const Runs = () => <div className="text-2xl font-bold">Training Runs</div>;
 const Settings = () => <div className="text-2xl font-bold">Platform Settings</div>;
 
@@ -36,7 +36,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
             <Route path="projects/:id" element={<ProjectDetails />} />
-            <Route path="registry" element={<Registry />} />
+            <Route path="registry" element={<ModelRegistry />} />
             <Route path="runs" element={<Runs />} />
             <Route path="upload" element={<DatasetUpload />} />
             <Route path="architecture" element={<ArchitectureExplorer />} />
