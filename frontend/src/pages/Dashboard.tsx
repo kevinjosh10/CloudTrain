@@ -1,4 +1,4 @@
-import { ProjectCard } from "@/components/ProjectCard";
+import { ProjectCard } from "../components/ProjectCard";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
