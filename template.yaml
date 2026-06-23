@@ -22,6 +22,8 @@ Resources:
   CloudTrainStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
+      BucketName: !Sub "cloudtrain-data-${AWS::AccountId}-${AWS::Region}"
+    Properties:
       CorsConfiguration:
         CorsRules:
           - AllowedHeaders: ['*']
@@ -51,7 +53,7 @@ Resources:
           DLQ_URL: !Ref TrainingDeadLetterQueue
       Policies:
         - S3CrudPolicy:
-            BucketName: !Ref CloudTrainStorageBucket
+            BucketName: !Sub "cloudtrain-data-${AWS::AccountId}-${AWS::Region}"
         - SQSSendMessagePolicy:
             QueueName: !GetAtt TrainingDeadLetterQueue.QueueName
       DeadLetterQueue:
@@ -79,10 +81,10 @@ Resources:
       MemorySize: 2048 # Higher memory for faster inference & caching
       Environment:
         Variables:
-          STORAGE_BUCKET: !Ref CloudTrainStorageBucket
+          STORAGE_BUCKET: !Sub "cloudtrain-data-${AWS::AccountId}-${AWS::Region}"
       Policies:
         - S3ReadPolicy:
-            BucketName: !Ref CloudTrainStorageBucket
+            BucketName: !Sub "cloudtrain-data-${AWS::AccountId}-${AWS::Region}"
       Events:
         PredictApi:
           Type: Api
