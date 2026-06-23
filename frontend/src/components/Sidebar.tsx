@@ -33,10 +33,10 @@ export function Sidebar() {
               key={item.name}
               to={item.href}
               className={cn(
-                "group flex items-center gap-3.5 rounded-2xl px-4 py-3.5 text-[15px] font-semibold transition-all duration-300",
+                "group flex items-center gap-3.5 rounded-2xl px-4 py-3.5 text-[15px] font-semibold transition-all duration-300 border",
                 isActive
-                  ? "bg-gradient-to-r from-amber-500/10 to-orange-500/5 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.1)] border border-amber-500/20"
-                  : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                  ? "bg-gradient-to-r from-amber-500/10 to-orange-500/5 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.1)] border-amber-500/20"
+                  : "border-transparent text-zinc-400 hover:bg-white/5 hover:text-white"
               )}
             >
               <item.icon className={cn("h-5 w-5 transition-colors", isActive ? "text-amber-500" : "text-zinc-500 group-hover:text-amber-400")} />
@@ -49,7 +49,7 @@ export function Sidebar() {
       <div className="mt-auto pt-6 border-t border-white/5">
         <Link
           to="/settings"
-          className="group flex items-center gap-3.5 rounded-2xl px-4 py-3.5 text-[15px] font-semibold text-zinc-400 transition-colors hover:bg-white/5 hover:text-white"
+          className="group flex items-center gap-3.5 rounded-2xl px-4 py-3.5 text-[15px] font-semibold text-zinc-400 transition-colors border border-transparent hover:bg-white/5 hover:text-white"
         >
           <Settings className="h-5 w-5 text-zinc-500 group-hover:text-amber-400 transition-colors" />
           Settings
