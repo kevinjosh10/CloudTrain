@@ -9,7 +9,7 @@ class DatasetManifest(BaseModel):
 
 class InferenceRequest(BaseModel):
     project_id: str
-    features: List[float]
+    features: Union[List[Union[float, int, str]], Dict[str, Union[float, int, str]]]
 
 class InferenceResponse(BaseModel):
     prediction: Union[float, str, int]
