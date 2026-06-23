@@ -1,0 +1,98 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  CloudTrain Studio - Serverless MLOps Platform
+
+Globals:
+  Function:
+    Timeout: 300
+    MemorySize: 1024
+    Runtime: python3.12
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        STORAGE_BUCKET: !Ref CloudTrainStorageBucket
+        DLQ_URL: !Ref TrainingDeadLetterQueue
+
+Resources:
+  # 1. SQS Dead Letter Queue
+  TrainingDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: cloudtrain-training-dlq
+
+  # 2. S3 Bucket for Datasets and Models
+  CloudTrainStorageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: ['GET', 'PUT', 'POST', 'DELETE']
+            AllowedOrigins: ['*']
+            MaxAge: 3000
+
+  # 3. API Gateway
+  CloudTrainApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+
+  # 4. Training Lambda Function
+  TrainingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src.training.app.lambda_handler
+      Description: Trains ML models when a new dataset is uploaded to S3
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref CloudTrainStorageBucket
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt TrainingDeadLetterQueue.QueueName
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !GetAtt TrainingDeadLetterQueue.Arn
+      Events:
+        DatasetUpload:
+          Type: S3
+          Properties:
+            Bucket: !Ref CloudTrainStorageBucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: datasets/
+
+  # 5. Inference Lambda Function
+  InferenceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src.inference.app.lambda_handler
+      Description: Serves predictions using the latest promoted model
+      MemorySize: 2048 # Higher memory for faster inference & caching
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref CloudTrainStorageBucket
+      Events:
+        PredictApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CloudTrainApi
+            Path: /predict
+            Method: post
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${CloudTrainApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
+  StorageBucketName:
+    Description: "CloudTrain Storage Bucket Name"
+    Value: !Ref CloudTrainStorageBucket
