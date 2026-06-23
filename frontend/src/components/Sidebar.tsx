@@ -25,7 +25,7 @@ export function Sidebar() {
         </span>
       </div>
 
-      <nav className="mt-10 flex-1 space-y-2">
+      <nav className="mt-10 flex-1 space-y-2 overflow-y-auto min-h-0 pr-2 custom-scrollbar">
         {navItems.map((item) => {
           const isActive = location.pathname === item.href || (item.href !== "/" && location.pathname.startsWith(item.href));
           return (
