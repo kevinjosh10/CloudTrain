@@ -10,10 +10,6 @@ Globals:
     Runtime: python3.12
     Architectures:
       - x86_64
-    Environment:
-      Variables:
-        STORAGE_BUCKET: !Ref CloudTrainStorageBucket
-        DLQ_URL: !Ref TrainingDeadLetterQueue
 
 Resources:
   # 1. SQS Dead Letter Queue
@@ -50,6 +46,9 @@ Resources:
       CodeUri: backend/
       Handler: src.training.app.lambda_handler
       Description: Trains ML models when a new dataset is uploaded to S3
+      Environment:
+        Variables:
+          DLQ_URL: !Ref TrainingDeadLetterQueue
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref CloudTrainStorageBucket
@@ -78,6 +77,9 @@ Resources:
       Handler: src.inference.app.lambda_handler
       Description: Serves predictions using the latest promoted model
       MemorySize: 2048 # Higher memory for faster inference & caching
+      Environment:
+        Variables:
+          STORAGE_BUCKET: !Ref CloudTrainStorageBucket
       Policies:
         - S3ReadPolicy:
             BucketName: !Ref CloudTrainStorageBucket
