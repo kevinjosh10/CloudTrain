@@ -17,7 +17,7 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
+      <Router basename="/CloudTrain">
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
