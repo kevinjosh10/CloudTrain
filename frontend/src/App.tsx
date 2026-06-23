@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Layout } from "./components/Layout";
+import { SplashScreen } from "./components/SplashScreen";
 
 import { Dashboard } from "./pages/Dashboard";
 import { ArchitectureExplorer } from "./pages/ArchitectureExplorer";
@@ -15,6 +17,17 @@ const Settings = () => <div className="text-2xl font-bold">Platform Settings</di
 const queryClient = new QueryClient();
 
 function App() {
+  const [showSplash, setShowSplash] = useState(() => {
+    return !sessionStorage.getItem("hasPlayedSplash");
+  });
+
+  if (showSplash) {
+    return <SplashScreen onComplete={() => {
+      sessionStorage.setItem("hasPlayedSplash", "true");
+      setShowSplash(false);
+    }} />;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <Router basename="/CloudTrain">
