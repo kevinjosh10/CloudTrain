@@ -17,15 +17,10 @@ const Settings = () => <div className="text-2xl font-bold">Platform Settings</di
 const queryClient = new QueryClient();
 
 function App() {
-  const [showSplash, setShowSplash] = useState(() => {
-    return !sessionStorage.getItem("hasPlayedSplash");
-  });
+  const [showSplash, setShowSplash] = useState(true);
 
   if (showSplash) {
-    return <SplashScreen onComplete={() => {
-      sessionStorage.setItem("hasPlayedSplash", "true");
-      setShowSplash(false);
-    }} />;
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
   }
 
   return (
