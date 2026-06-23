@@ -36,11 +36,24 @@ jobs:
       - name: SAM Build
         run: sam build --use-container
 
+      - name: Shrink Lambda Package Size
+        run: |
+          echo "Original size:"
+          du -sh .aws-sam/build/TrainingFunction || true
+          find .aws-sam/build/ -name "*.so" -exec strip {} \; || true
+          find .aws-sam/build/ -type d -name "tests" -exec rm -rf {} + || true
+          find .aws-sam/build/ -type d -name "test" -exec rm -rf {} + || true
+          find .aws-sam/build/ -type d -name "__pycache__" -exec rm -rf {} + || true
+          find .aws-sam/build/ -name "*.pyc" -delete || true
+          find .aws-sam/build/ -name "*.a" -delete || true
+          echo "Shrunk size:"
+          du -sh .aws-sam/build/TrainingFunction || true
+
       - name: SAM Deploy
         run: >
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset 
-          --stack-name cloudtrain-studio-v2 
-          --s3-prefix cloudtrain-studio-v2 
+          --stack-name cloudtrain-studio-v3 
+          --s3-prefix cloudtrain-studio-v3 
           --resolve-s3 
           --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
 
