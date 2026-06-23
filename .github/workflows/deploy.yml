@@ -34,13 +34,13 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: SAM Build
-        run: sam build
+        run: sam build --use-container
 
       - name: SAM Deploy
         run: >
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset 
-          --stack-name cloudtrain-studio 
-          --s3-prefix cloudtrain-studio 
+          --stack-name cloudtrain-studio-v2 
+          --s3-prefix cloudtrain-studio-v2 
           --resolve-s3 
           --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
 
@@ -54,7 +54,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install Dependencies
         working-directory: ./frontend
